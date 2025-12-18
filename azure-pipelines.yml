@@ -49,3 +49,13 @@ stages:
             backendAzureRmStorageAccountName: 'donotdeletestorage5'
             backendAzureRmContainerName: 'tfstate'
             backendAzureRmKey: 'rkstest.tfstate'
+        - task: TerraformTask@5
+          displayName: Terraform Format
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            workingDirectory: '$(config_path)'
+            commandOptions: 'fmt'
+            outputTo: 'console'
+            environmentServiceNameAzureRM: 'Dec_Pipeline_2025'
+            environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
