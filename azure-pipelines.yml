@@ -3,5 +3,11 @@ trigger: none
 pool:
   name: SelfAgent_RK
 
- jobs:
- - job: init_plan
+jobs:
+- job: init_plan
+  displayName: Terraform Init + Plan
+  steps:
+    - task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
