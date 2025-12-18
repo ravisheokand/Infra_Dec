@@ -3,11 +3,19 @@ trigger: none
 pool:
   name: SelfAgent_RK
 
-jobs:
-- job: init_plan
-  displayName: Terraform Init + Plan
-  steps:
-    - task: TerraformInstaller@1
-      displayName: Install Terraform
-      inputs:
-        terraformVersion: 'latest'
+stages:
+# ----------------------
+# Stage 1: Build
+# ----------------------
+- stage: Build
+  displayName: Build Stage (Init + Plan)
+#  condition: eq('${{ parameters.Build }}', true)
+  jobs:
+# Stage 1 Job 1
+    - job: terraform_init_fmt_validate
+      displayName: Terraform Init + Fmt + Validate
+      steps:
+        - task: TerraformInstaller@1
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
