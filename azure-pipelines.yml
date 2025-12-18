@@ -3,6 +3,10 @@ trigger: none
 pool:
   name: SelfAgent_RK
 
+variables:
+  config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
+  OverrideSubscriptionID: 'ff1980ab-1170-4014-971d-df65aabf1e5b'
+
 stages:
 # ----------------------
 # Stage 1: Build
@@ -23,9 +27,9 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/infra/dev'
+            workingDirectory: '$(config_path)'
             backendServiceArm: 'Dec_Pipeline_2025'
-            backendAzureRmOverrideSubscriptionID: 'ff1980ab-1170-4014-971d-df65aabf1e5b'
+            backendAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
             backendAzureRmResourceGroupName: 'DoNotDeleteRg'
             backendAzureRmStorageAccountName: 'donotdeletestorage5'
             backendAzureRmContainerName: 'tfstate'
