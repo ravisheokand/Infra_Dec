@@ -11,12 +11,12 @@ parameters:
       - true
       - false
 
-  # - name: Deploy
-  #   displayName: Deploy(Manual validation + Apply) ?
-  #   type: string
-  #   values:
-  #     - true
-  #     - false
+  - name: Deploy
+    displayName: Deploy(Manual validation + Apply) ?
+    type: string
+    values:
+      - true
+      - false
 
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
@@ -95,6 +95,54 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'plan'
+            workingDirectory: '$(config_path)'
+            environmentServiceNameAzureRM: 'Dec_Pipeline_2025'
+            environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+
+# ----------------------
+# Stage 2: Deploy
+# ----------------------
+- stage: Deploy
+  displayName: Deploy Stage (Manual Validation and Apply)
+  dependsOn: Build
+  condition: eq('${{ parameters.Deploy }}', true)
+  jobs:
+# Stage 2 Job 1
+    - job: manual_validation
+      displayName: Manual Validation
+      pool: server
+      steps:
+        - task: ManualValidation@1
+          inputs:
+            notifyUsers: 'erashe25@gmail.com'
+            instructions: 'Check and approve'
+# Stage 2 Job 2
+    - job: terraform_apply
+      displayName: Terraform Apply
+      dependsOn: manual_validation
+      condition: succeeded('manual_validation')
+      steps:
+        - task: TerraformInstaller@1
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          displayName: Terraform Init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(config_path)'
+            backendServiceArm: 'Dec_Pipeline_2025'
+            backendAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+            backendAzureRmResourceGroupName: 'DoNotDeleteRg'
+            backendAzureRmStorageAccountName: 'donotdeletestorage5'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'rkstest.tfstate'
+        - task: TerraformTask@5
+          displayName: Terraform Apply
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
             workingDirectory: '$(config_path)'
             environmentServiceNameAzureRM: 'Dec_Pipeline_2025'
             environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
