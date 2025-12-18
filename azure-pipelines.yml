@@ -30,8 +30,9 @@ stages:
   displayName: Build Stage (Init + Plan)
   condition: eq('${{ parameters.Build }}', true)
   jobs:
-
+# ----------------------
 # Stage 1 Job 1
+# ----------------------
     - job: terraform_init_fmt_validate
       displayName: Terraform Init + Fmt + Validate
       steps:
@@ -67,8 +68,9 @@ stages:
             provider: 'azurerm'
             command: 'validate'
             workingDirectory: '$(config_path)'
-
+# ----------------------
 # Stage 1 Job 2
+# ----------------------
     - job: terraform_init_plan
       dependsOn: terraform_init_fmt_validate
       condition: succeeded('terraform_init_fmt_validate')
@@ -107,7 +109,9 @@ stages:
   dependsOn: Build
   condition: eq('${{ parameters.Deploy }}', true)
   jobs:
+# ----------------------
 # Stage 2 Job 1
+# ----------------------
     - job: manual_validation
       displayName: Manual Validation
       pool: server
@@ -116,7 +120,9 @@ stages:
           inputs:
             notifyUsers: 'erashe25@gmail.com'
             instructions: 'Check and approve'
+# ----------------------
 # Stage 2 Job 2
+# ----------------------
     - job: terraform_apply
       displayName: Terraform Apply
       dependsOn: manual_validation
