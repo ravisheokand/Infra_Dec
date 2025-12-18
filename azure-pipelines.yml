@@ -1,0 +1,89 @@
+trigger: none
+
+pool:
+  name: SelfAgent_RK
+
+
+parameters:
+  - name: Build
+    displayName: Build (Run Init,Validate,Plan) ?
+    type: string
+    values:
+      - true
+      - false
+
+  - name: Deploy
+    displayName: Deploy(Manual validation + Apply) ?
+    type: string
+    values:
+      - true
+      - false
+
+variables:
+#  workDir: '$(System.DefaultWorkingDirectory)/environment/${{parameters.environment}}'
+  config_path: '$(System.DefaultWorkingDirectory)'
+  OverrideSubscriptionID: 'ff1980ab-1170-4014-971d-df65aabf1e5b'
+
+jobs:
+- job: init_plan
+  displayName: Terraform Init + Plan
+  condition: and(succeeded(), eq('${{ parameters.runInitPlan }}', 'true'))
+  steps:
+    - task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
+
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(config_path)'
+        backendServiceArm: 'SC_RK'
+        backendAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+        backendAzureRmResourceGroupName: 'DoNotDeleteRg'
+        backendAzureRmStorageAccountName: 'donotdeletestorage5'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'rkstest.tfstate'
+
+    - task: TerraformTask@5
+      displayName: Terraform Init + Terraform Plan
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(config_path)'
+        environmentServiceNameAzureRM: 'SC_RK'
+        environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+
+- job: apply
+  displayName: Terraform Apply
+  dependsOn: init_plan
+  condition: and(succeeded(), eq('${{ parameters.runApply }}', 'true'))
+  steps:
+    - task: TerraformInstaller@1
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
+    
+    - task: TerraformTask@5
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(config_path)'
+        backendServiceArm: 'SC_RK'
+        backendAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+        backendAzureRmResourceGroupName: 'DoNotDeleteRg'
+        backendAzureRmStorageAccountName: 'donotdeletestorage5'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'rkstest.tfstate'
+
+    - task: TerraformTask@5
+      displayName: Terraform Apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(config_path)'
+        environmentServiceNameAzureRM: 'SC_RK'
+        environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
