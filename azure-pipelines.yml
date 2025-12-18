@@ -30,6 +30,7 @@ stages:
   displayName: Build Stage (Init + Plan)
   condition: eq('${{ parameters.Build }}', true)
   jobs:
+
 # Stage 1 Job 1
     - job: terraform_init_fmt_validate
       displayName: Terraform Init + Fmt + Validate
@@ -66,6 +67,7 @@ stages:
             provider: 'azurerm'
             command: 'validate'
             workingDirectory: '$(config_path)'
+
 # Stage 1 Job 2
     - job: terraform_init_plan
       dependsOn: terraform_init_fmt_validate
