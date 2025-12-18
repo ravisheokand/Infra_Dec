@@ -3,6 +3,21 @@ trigger: none
 pool:
   name: SelfAgent_RK
 
+parameters:
+  - name: Build
+    displayName: Build (Run Init,Validate,Plan) ?
+    type: string
+    values:
+      - true
+      - false
+
+  # - name: Deploy
+  #   displayName: Deploy(Manual validation + Apply) ?
+  #   type: string
+  #   values:
+  #     - true
+  #     - false
+
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
   OverrideSubscriptionID: 'ff1980ab-1170-4014-971d-df65aabf1e5b'
@@ -13,7 +28,7 @@ stages:
 # ----------------------
 - stage: Build
   displayName: Build Stage (Init + Plan)
-#  condition: eq('${{ parameters.Build }}', true)
+  condition: eq('${{ parameters.Build }}', true)
   jobs:
 # Stage 1 Job 1
     - job: terraform_init_fmt_validate
