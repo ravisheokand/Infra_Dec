@@ -39,6 +39,7 @@ stages:
           inputs:
             terraformVersion: 'latest'
         - task: TerraformTask@5
+          displayName: Terraform Init
           inputs:
             provider: 'azurerm'
             command: 'init'
@@ -59,3 +60,31 @@ stages:
             outputTo: 'console'
             environmentServiceNameAzureRM: 'Dec_Pipeline_2025'
             environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+        - task: TerraformTask@5
+          displayName: Terraform Validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(config_path)'
+# Stage 1 Job 2
+    - job: terraform_init_plan
+      dependsOn: terraform_init_fmt_validate
+      condition: succeeded('terraform_init_fmt_validate')
+      displayName: Terraform Init + Plan
+      steps:
+        - task: TerraformInstaller@1
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          displayName: Terraform Init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(config_path)'
+            backendServiceArm: 'Dec_Pipeline_2025'
+            backendAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+            backendAzureRmResourceGroupName: 'DoNotDeleteRg'
+            backendAzureRmStorageAccountName: 'donotdeletestorage5'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'rkstest.tfstate'
