@@ -105,34 +105,34 @@ module "sql_database" {
   sql_database_name = "rk-sqldb"
 }
 
-module "key_vault" {
-  depends_on = [module.resource_group]
-  source     = "../../modules/9.azurerm_key_vault"
-  kv_name    = "rk-kv-sep"
-  rg_name    = module.resource_group.rg_name
-  location   = module.resource_group.rg_location
-}
+# module "key_vault" {
+#   depends_on = [module.resource_group]
+#   source     = "../../modules/9.azurerm_key_vault"
+#   kv_name    = "rk-kv-dec"
+#   rg_name    = module.resource_group.rg_name
+#   location   = module.resource_group.rg_location
+# }
 
-module "vm_username" {
-  depends_on     = [module.key_vault]
-  source         = "../../modules/10.azurerm_key_vault_secret"
-  key_vault_name = module.key_vault.key_vault_name
-  rg_name        = module.resource_group.rg_name
-  secret_name    = "vm-username"
-  secret_value   = "rkadmin"
-}
+# module "vm_username" {
+#   depends_on     = [module.key_vault]
+#   source         = "../../modules/10.azurerm_key_vault_secret"
+#   key_vault_name = module.key_vault.key_vault_name
+#   rg_name        = module.resource_group.rg_name
+#   secret_name    = "vm-username"
+#   secret_value   = "rkadmin"
+# }
 
-module "vm_password" {
-  depends_on     = [module.key_vault]
-  source         = "../../modules/10.azurerm_key_vault_secret"
-  key_vault_name = module.key_vault.key_vault_name
-  rg_name        = module.resource_group.rg_name
-  secret_name    = "vm-password"
-  secret_value   = "Ericsson@123"
-}
+# module "vm_password" {
+#   depends_on     = [module.key_vault]
+#   source         = "../../modules/10.azurerm_key_vault_secret"
+#   key_vault_name = module.key_vault.key_vault_name
+#   rg_name        = module.resource_group.rg_name
+#   secret_name    = "vm-password"
+#   secret_value   = "Ericsson@123"
+# }
 
 module "frontend_vm" {
-  depends_on      = [module.nic_frontend, module.vm_username, module.vm_password]
+  depends_on      = [module.nic_frontend]
   source          = "../../modules/11.azurerm_virtual_machine"
   vm_name         = "RK-forntend-vm"
   rg_name         = module.resource_group.rg_name
@@ -144,12 +144,12 @@ module "frontend_vm" {
   image_sku       = "22_04-lts-gen2"
   image_version   = "latest"
   key_vault_name  = "rk-kv-sep"
-  admin_username  = module.vm_username.secret_value
-  admin_password  = module.vm_password.secret_value
+  admin_username  = "rkadmin"
+  admin_password  = "Ericsson@123"
 }
 
 module "backend_vm" {
-  depends_on      = [module.nic_frontend, module.vm_username, module.vm_password]
+  depends_on      = [module.nic_frontend]
   source          = "../../modules/11.azurerm_virtual_machine"
   vm_name         = "RK-backend-vm"
   rg_name         = module.resource_group.rg_name
@@ -161,6 +161,6 @@ module "backend_vm" {
   image_sku       = "22_04-lts-gen2"
   image_version   = "latest"
   key_vault_name  = "rk-kv-sep"
-  admin_username  = module.vm_username.secret_value
-  admin_password  = module.vm_password.secret_value
+  admin_username  = "rkadmin"
+  admin_password  = "Ericsson@123"
 }
