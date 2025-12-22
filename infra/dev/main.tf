@@ -108,7 +108,7 @@ module "sql_database" {
 module "frontend_vm" {
   depends_on      = [module.nic_frontend]
   source          = "../../modules/11.azurerm_virtual_machine"
-  vm_name         = "RK-forntend-vm"
+  vm_name         = "RK-frontend-vm"
   rg_name         = module.resource_group.rg_name
   vm_location     = module.resource_group.rg_location
   nic_id          = module.nic_frontend.nic_id
