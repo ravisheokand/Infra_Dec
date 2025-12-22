@@ -115,7 +115,14 @@ stages:
   displayName: Validate
   dependsOn: Build
   condition: eq('${{ parameters.Manual_Validate }}', true)
-  # jobs:
+  jobs:
+  - job: manual_validation_only
+    pool: server
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: 'erashe25@gmail.com'
+        instructions: 'Please validate Terraform plan output'
 
 # ----------------------
 # Stage 3: Deploy
