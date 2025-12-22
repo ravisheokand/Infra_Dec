@@ -11,6 +11,13 @@ parameters:
       - true
       - false
 
+  - name: Manual_Validate
+    displayName: Validate ?
+    type: string
+    values:
+      - true
+      - false
+
   - name: Deploy
     displayName: Deploy(Manual validation + Apply) ?
     type: string
@@ -102,7 +109,16 @@ stages:
             environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
 
 # ----------------------
-# Stage 2: Deploy
+# Stage 2: Validate
+# ----------------------
+- stage: Validate
+  displayName: Validate
+  dependsOn: Build
+  condition: eq('${{ parameters.Manual_Validate }}', true)
+  # jobs:
+
+# ----------------------
+# Stage 3: Deploy
 # ----------------------
 - stage: Deploy
   displayName: Deploy Stage (Manual Validation and Apply)
@@ -110,7 +126,7 @@ stages:
   condition: eq('${{ parameters.Deploy }}', true)
   jobs:
 # ----------------------
-# Stage 2 Job 1
+# Stage 3 Job 1
 # ----------------------
     - job: manual_validation
       displayName: Manual Validation
