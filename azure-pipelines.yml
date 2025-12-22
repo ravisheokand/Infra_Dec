@@ -6,17 +6,12 @@ pool:
 parameters:
   - name: Build
     displayName: Build (Run Init,Validate,Plan) ?
-    type: string
-    values:
-      - true
-      - false
-
-  - name: Manual_Validate
-    displayName: Validate ?
-    type: string
-    values:
-      - true
-      - false
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
 
   - name: Deploy
     displayName: Deploy(Manual validation + Apply) ?
@@ -109,23 +104,7 @@ stages:
             environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
 
 # ----------------------
-# Stage 2: Validate
-# ----------------------
-- stage: Validate
-  displayName: Validate
-  dependsOn: Build
-  condition: eq('${{ parameters.Manual_Validate }}', true)
-  jobs:
-  - job: manual_validation_only
-    pool: server
-    steps:
-    - task: ManualValidation@1
-      inputs:
-        notifyUsers: 'erashe25@gmail.com'
-        instructions: 'Please validate Terraform plan output'
-
-# ----------------------
-# Stage 3: Deploy
+# Stage 2: Deploy
 # ----------------------
 - stage: Deploy
   displayName: Deploy Stage (Manual Validation and Apply)
@@ -133,7 +112,7 @@ stages:
   condition: eq('${{ parameters.Deploy }}', true)
   jobs:
 # ----------------------
-# Stage 3 Job 1
+# Stage 2 Job 1
 # ----------------------
     - job: manual_validation
       displayName: Manual Validation
