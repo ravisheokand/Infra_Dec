@@ -15,10 +15,12 @@ parameters:
 
   - name: Deploy
     displayName: Deploy(Manual validation + Apply) ?
-    type: string
-    values:
-      - true
-      - false
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
 
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
@@ -114,14 +116,14 @@ stages:
 # ----------------------
 # Stage 2 Job 1
 # ----------------------
-    - job: manual_validation
-      displayName: Manual Validation
-      pool: server
-      steps:
-        - task: ManualValidation@1
-          inputs:
-            notifyUsers: 'erashe25@gmail.com'
-            instructions: 'Check and approve'
+    # - job: manual_validation
+    #   displayName: Manual Validation
+    #   pool: server
+    #   steps:
+    #     - task: ManualValidation@1
+    #       inputs:
+    #         notifyUsers: 'erashe25@gmail.com'
+    #         instructions: 'Check and approve'
 # ----------------------
 # Stage 2 Job 2
 # ----------------------
