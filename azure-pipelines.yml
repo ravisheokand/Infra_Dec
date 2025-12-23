@@ -122,8 +122,8 @@ stages:
 # ----------------------
 - stage: Validate
   displayName: Validation
-  dependsOn: Build
-  condition: eq('${{ parameters.Validate }}', true)
+  # dependsOn: Build
+  # condition: eq('${{ parameters.Validate }}', true)
   jobs:
 # ----------------------
 # Stage 2 Job 1
@@ -135,7 +135,7 @@ stages:
         displayName: checkov
         continueOnError: true
         inputs:
-          script: 'checkov -d $(config_path) -o junitxl > checkov-out.xml'
+          script: 'checkov -d .> checkov-out.xml'
           workingDirectory: '$(config_path)'
  
       - task: PublishTestResults@2
