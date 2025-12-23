@@ -134,7 +134,7 @@ stages:
     - job: terraform_apply
       displayName: Terraform Apply
       # dependsOn: manual_validation
-      condition: succeeded('manual_validation')
+      # condition: succeeded('manual_validation')
       steps:
         - task: TerraformInstaller@1
           displayName: Install Terraform
