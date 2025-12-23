@@ -125,16 +125,26 @@ stages:
   dependsOn: Build
   condition: eq('${{ parameters.Validate }}', true)
   jobs:
-
-
-
-
-
-
-
-
-
-
+# ----------------------
+# Stage 2 Job 1
+# ----------------------
+    - job: checkov
+      displayName: Checkov
+      steps:
+      - task: CmdLine@2
+        displayName: checkov
+        continueOnError: true
+        inputs:
+          script: 'checkov -d $(config_path) -o junitxl > checkov-out.xml'
+          workingDirectory: '$(config_path)'
+ 
+      - task: PublishTestResults@2
+        displayName: Checkov_Publish
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'checkov-out.xml'
+          searchFolder: '$(config_path)'
+          testRunTitle: 'Checkov'
 
 # ----------------------
 # Stage 2: Deploy
