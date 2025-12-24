@@ -135,8 +135,11 @@ stages:
         displayName: checkov
         continueOnError: true
         inputs:
-          script: 'checkov -d . -o junitxml > checkov-out.xml'
+          script: 'python -m checkov -d . -o junitxml > checkov-out.xml'
           workingDirectory: '$(config_path)'
+        
+          # script: 'checkov -d . -o junitxml > checkov-out.xml'
+          # workingDirectory: '$(config_path)'
       - task: PublishTestResults@2
         displayName: Checkov_Publish
         inputs:
