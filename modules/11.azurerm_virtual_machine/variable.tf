@@ -56,7 +56,7 @@ variable "nic_id" {
 }
 
 
-# variable "key_vault_name" {
-#   description = "Name of the Key Vault to retrieve secrets from"
-#   type        = string
-# }
+variable "key_vault_name" {
+  description = "Name of the Key Vault to retrieve secrets from"
+  type        = string
+}
