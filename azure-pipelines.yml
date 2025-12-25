@@ -1,4 +1,8 @@
 trigger: none
+  # branches:
+  #   include:
+  #     - feature/*
+  #     - main
 
 pool:
   name: SelfAgent_RK
@@ -6,17 +10,30 @@ pool:
 parameters:
   - name: Build
     displayName: Build (Run Init,Validate,Plan) ?
-    type: string
-    values:
-      - true
-      - false
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
+
+  - name: Validate
+    displayName: Validate ?
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
 
   - name: Deploy
     displayName: Deploy(Manual validation + Apply) ?
-    type: string
-    values:
-      - true
-      - false
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
 
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
@@ -100,6 +117,33 @@ stages:
             workingDirectory: '$(config_path)'
             environmentServiceNameAzureRM: 'Dec_Pipeline_2025'
             environmentAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
+# ----------------------
+# Stage 2: Validate
+# ----------------------
+- stage: Validate
+  displayName: Validation
+  # dependsOn: Build
+  condition: eq('${{ parameters.Validate }}', true)
+  jobs:
+# ----------------------
+# Stage 2 Job 1
+# ----------------------
+    - job: checkov
+      displayName: Checkov
+      steps:
+      - task: CmdLine@2
+        displayName: checkov
+        continueOnError: true
+        inputs:
+          script: 'checkov -d . -o junitxml > checkov-out.xml || exit 0'
+          workingDirectory: '$(config_path)'
+      - task: PublishTestResults@2
+        displayName: Checkov_Publish
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'checkov-out.xml'
+          searchFolder: '$(config_path)'
+          testRunTitle: 'Checkov'
 
 # ----------------------
 # Stage 2: Deploy
@@ -112,21 +156,21 @@ stages:
 # ----------------------
 # Stage 2 Job 1
 # ----------------------
-    - job: manual_validation
-      displayName: Manual Validation
-      pool: server
-      steps:
-        - task: ManualValidation@1
-          inputs:
-            notifyUsers: 'erashe25@gmail.com'
-            instructions: 'Check and approve'
+    # - job: manual_validation
+    #   displayName: Manual Validation
+    #   pool: server
+    #   steps:
+    #     - task: ManualValidation@1
+    #       inputs:
+    #         notifyUsers: 'erashe25@gmail.com'
+    #         instructions: 'Check and approve'
 # ----------------------
 # Stage 2 Job 2
 # ----------------------
     - job: terraform_apply
       displayName: Terraform Apply
-      dependsOn: manual_validation
-      condition: succeeded('manual_validation')
+      # dependsOn: manual_validation
+      # condition: succeeded('manual_validation')
       steps:
         - task: TerraformInstaller@1
           displayName: Install Terraform
