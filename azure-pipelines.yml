@@ -128,6 +128,24 @@ stages:
 # ----------------------
 # Stage 2 Job 1
 # ----------------------
+    - job: tflint
+      displayName: tflint
+      steps:
+      - task: CmdLine@2
+        displayName: tflint
+        continueOnError: true
+        inputs:
+          script: 'tflint --recursive /f junit > tflint-report.xml'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+      - task: PublishTestResults@2
+        displayName: TFLint_Report_Publish
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'tflint-report.xml'
+          testRunTitle: 'TFLint-scan'
+# ----------------------
+# Stage 2 Job 2
+# ----------------------
     - job: checkov
       displayName: Checkov
       steps:
