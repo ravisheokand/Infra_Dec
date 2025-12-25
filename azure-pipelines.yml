@@ -146,7 +146,7 @@ stages:
 # ----------------------
 # Stage 2 Job 2
 # ----------------------
-    - job: checkov
+    - job: Checkov
       displayName: Checkov
       steps:
       - task: CmdLine@2
