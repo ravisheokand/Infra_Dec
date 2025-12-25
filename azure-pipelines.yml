@@ -138,6 +138,7 @@ stages:
           script: |
             terraform init
             terraform plan -out=tfplan
+            $env:INFRACOST_API_KEY="ico-y1VcUoTYndmNTMhlZKkVsdU61mdMm90T"
             infracost breakdown --path tfplan /f junit > terracost-report.xml 
           workingDirectory: '$(config_path)'
       - task: PublishTestResults@2
