@@ -1,12 +1,12 @@
 module "resource_group" {
-  source      = "../../modules/1.azurerm_resource_group"
+  source      = "../../modules/01.azurerm_resource_group"
   rg_name     = "RKS_Infra_RG_dev"
   rg_location = "New Zealand North"
 }
 
 module "virtual_network" {
   depends_on    = [module.resource_group]
-  source        = "../../modules/2.azurerm_virtual_network"
+  source        = "../../modules/02.azurerm_virtual_network"
   vnet_name     = "RK-vnet"
   rg_location   = module.resource_group.rg_location
   rg_name       = module.resource_group.rg_name
@@ -15,7 +15,7 @@ module "virtual_network" {
 
 module "frontend_subnet" {
   depends_on           = [module.virtual_network]
-  source               = "../../modules/3.azurerm_subnet"
+  source               = "../../modules/03.azurerm_subnet"
   subnet_name          = "FE-subnet"
   virtual_network_name = module.virtual_network.vnet_name
   rg_name              = module.resource_group.rg_name
@@ -24,7 +24,7 @@ module "frontend_subnet" {
 
 module "backend_subnet" {
   depends_on           = [module.virtual_network]
-  source               = "../../modules/3.azurerm_subnet"
+  source               = "../../modules/03.azurerm_subnet"
   subnet_name          = "BE-subnet"
   virtual_network_name = module.virtual_network.vnet_name
   rg_name              = module.resource_group.rg_name
@@ -33,7 +33,7 @@ module "backend_subnet" {
 
 module "pip_forntend" {
   depends_on        = [module.resource_group]
-  source            = "../../modules/4.azurerm_public_ip"
+  source            = "../../modules/04.azurerm_public_ip"
   pip_name          = "RK-frontend-pip"
   rg_name           = module.resource_group.rg_name
   location          = module.resource_group.rg_location
@@ -42,7 +42,7 @@ module "pip_forntend" {
 
 module "pip_backend" {
   depends_on        = [module.resource_group]
-  source            = "../../modules/4.azurerm_public_ip"
+  source            = "../../modules/04.azurerm_public_ip"
   pip_name          = "RK-backend-pip"
   rg_name           = module.resource_group.rg_name
   location          = module.resource_group.rg_location
@@ -51,7 +51,7 @@ module "pip_backend" {
 
 module "network_security_group_frontend" {
   depends_on = [module.frontend_subnet]
-  source     = "../../modules/5.azurerm_network_security_group"
+  source     = "../../modules/05.azurerm_network_security_group"
   nsg_name   = "RK-nsg-frontend"
   rg_name    = module.resource_group.rg_name
   location   = module.resource_group.rg_location
@@ -60,7 +60,7 @@ module "network_security_group_frontend" {
 
 module "network_security_group_backend" {
   depends_on = [module.backend_subnet]
-  source     = "../../modules/5.azurerm_network_security_group"
+  source     = "../../modules/05.azurerm_network_security_group"
   nsg_name   = "RK-nsg-backend"
   rg_name    = module.resource_group.rg_name
   location   = module.resource_group.rg_location
@@ -69,7 +69,7 @@ module "network_security_group_backend" {
 
 module "nic_frontend" {
   depends_on   = [module.frontend_subnet]
-  source       = "../../modules/6.azurerm_network_interface"
+  source       = "../../modules/06.azurerm_network_interface"
   nic_name     = "RK-frontend-nic"
   rg_name      = module.resource_group.rg_name
   nic_location = module.resource_group.rg_location
@@ -79,7 +79,7 @@ module "nic_frontend" {
 
 module "nic_backend" {
   depends_on   = [module.backend_subnet]
-  source       = "../../modules/6.azurerm_network_interface"
+  source       = "../../modules/06.azurerm_network_interface"
   nic_name     = "RK-backend-nic"
   rg_name      = module.resource_group.rg_name
   nic_location = module.resource_group.rg_location
@@ -89,7 +89,7 @@ module "nic_backend" {
 
 module "sqlserver" {
   depends_on                 = [module.resource_group]
-  source                     = "../../modules/7.azurerm_sql_server"
+  source                     = "../../modules/07.azurerm_sql_server"
   rg_name                    = module.resource_group.rg_name
   location                   = module.resource_group.rg_location
   sqlserver_name             = "rk-sqlserver"
@@ -99,7 +99,7 @@ module "sqlserver" {
 
 module "sql_database" {
   depends_on        = [module.sqlserver]
-  source            = "../../modules/8.azurerm_sql_database"
+  source            = "../../modules/08.azurerm_sql_database"
   rg_name           = module.resource_group.rg_name
   sql_server_name   = module.sqlserver.sql_server_name
   sql_database_name = "rk-sqldb"
@@ -145,7 +145,7 @@ module "backend_vm" {
 
 # module "key_vault" {
 #   depends_on = [module.resource_group]
-#   source     = "../../modules/9.azurerm_key_vault"
+#   source     = "../../modules/09.azurerm_key_vault"
 #   kv_name    = "rk-kv-dec"
 #   rg_name    = module.resource_group.rg_name
 #   location   = module.resource_group.rg_location
