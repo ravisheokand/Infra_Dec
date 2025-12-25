@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">= 1.5.0"
+  
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.56.0"
+    }
+  }
+}
+
 resource "azurerm_network_security_group" "rk-nsg" {
   name                = var.nsg_name
   location            = var.location

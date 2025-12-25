@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">= 1.5.0"
+  
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.56.0"
+    }
+  }
+}
+
 resource "azurerm_mysql_flexible_database" "sql_database" {
   name                = var.sql_database_name
   resource_group_name = var.rg_name

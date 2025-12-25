@@ -1,19 +1,20 @@
 terraform {
+  required_version = ">= 1.5.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>4.43.0"
+      version = "~>4.56.0"
     }
   }
   backend "azurerm" {
     resource_group_name  = "DoNotDeleteRg"
-    storage_account_name = "donotdeletestorage5555"
+    storage_account_name = "donotdeletestorage555555"
     container_name       = "tfstate"
-    key                  = "rks_sep.tfstate"
+    key                  = "rks_012026.tfstate"
   }
 }
 
 provider "azurerm" {
   features {}
-  subscription_id = "13dfd1e6-6770-4299-b7ea-6aa09b346468"
-}  
+  subscription_id = "a9076473-03ad-4c76-8993-4edd69689ba6"
+}
