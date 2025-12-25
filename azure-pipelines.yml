@@ -145,7 +145,7 @@ stages:
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'terracost-report.xml'
-          testRunTitle: 'TFLint-scan'
+          testRunTitle: 'Terracost-scan'
 
 # ----------------------
 # Stage 2 Job 2
