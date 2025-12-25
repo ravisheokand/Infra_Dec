@@ -37,7 +37,7 @@ parameters:
 
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
-  OverrideSubscriptionID: 'ff1980ab-1170-4014-971d-df65aabf1e5b'
+  OverrideSubscriptionID: 'a9076473-03ad-4c76-8993-4edd69689ba6'
 
 stages:
 # ----------------------
@@ -152,10 +152,10 @@ stages:
 # Stage 2 Job 2
 # ----------------------
     - job: tflint
-      displayName: tflint
+      displayName: TFLint
       steps:
       - task: CmdLine@2
-        displayName: tflint
+        displayName: TFLint
         continueOnError: true
         inputs:
           script: 'tflint --recursive /f junit > tflint-report.xml'
@@ -173,7 +173,7 @@ stages:
       displayName: Checkov
       steps:
       - task: CmdLine@2
-        displayName: checkov
+        displayName: Checkov
         continueOnError: true
         inputs:
           script: 'checkov -d . -o junitxml > checkov-out.xml || exit 0'
