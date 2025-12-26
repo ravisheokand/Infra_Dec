@@ -146,6 +146,7 @@ stages:
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'terracost-report.xml'
+          searchFolder: '$(config_path)'
           testRunTitle: 'Terracost-scan'
 
 # ----------------------
