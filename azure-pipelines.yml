@@ -137,15 +137,15 @@ stages:
         inputs:
           script: |
             $env:INFRACOST_API_KEY = "$(INFRACOST_API_KEY)"
-            infracost breakdown --path . /f junit > terracost-report.xml 
+            infracost breakdown --path .
           workingDirectory: '$(config_path)'
-      - task: PublishTestResults@2
-        displayName: Terracost_Report_Publish
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'terracost-report.xml'
-          searchFolder: '$(config_path)'
-          testRunTitle: 'Terracost-scan'
+      # - task: PublishTestResults@2
+      #   displayName: Terracost_Report_Publish
+      #   inputs:
+      #     testResultsFormat: 'JUnit'
+      #     testResultsFiles: 'terracost-report.xml'
+      #     searchFolder: '$(config_path)'
+      #     testRunTitle: 'Terracost-scan'
 
 # ----------------------
 # Stage 2 Job 2
