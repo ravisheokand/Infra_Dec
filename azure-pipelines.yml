@@ -136,10 +136,8 @@ stages:
         continueOnError: true
         inputs:
           script: |
-            terraform init
-            terraform plan -out=tfplan
             $env:INFRACOST_API_KEY = "$(INFRACOST_API_KEY)"
-            infracost breakdown --path tfplan /f junit > terracost-report.xml 
+            infracost breakdown --path . /f junit > terracost-report.xml 
           workingDirectory: '$(config_path)'
       - task: PublishTestResults@2
         displayName: Terracost_Report_Publish
