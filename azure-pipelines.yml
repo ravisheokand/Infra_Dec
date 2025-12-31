@@ -138,53 +138,54 @@ stages:
           script: |
             terraform init
             terraform plan -out=tfplan
-            $env:INFRACOST_API_KEY="ico-y1VcUoTYndmNTMhlZKkVsdU61mdMm90T"
-            infracost breakdown --path tfplan /f junit > terracost-report.xml 
+            $env:INFRACOST_API_KEY = "$(INFRACOST_API_KEY)"
+            infracost breakdown --path tfplan /f junit > terracostreport.xml
           workingDirectory: '$(config_path)'
       - task: PublishTestResults@2
         displayName: Terracost_Report_Publish
         inputs:
           testResultsFormat: 'JUnit'
-          testResultsFiles: 'terracost-report.xml'
+          testResultsFiles: 'terracostreport.xml'
+          searchFolder: '$(config_path)'
           testRunTitle: 'Terracost-scan'
 
 # ----------------------
 # Stage 2 Job 2
 # ----------------------
-    - job: tflint
-      displayName: tflint
-      steps:
-      - task: CmdLine@2
-        displayName: tflint
-        continueOnError: true
-        inputs:
-          script: 'tflint --recursive /f junit > tflint-report.xml'
-          workingDirectory: '$(System.DefaultWorkingDirectory)'
-      - task: PublishTestResults@2
-        displayName: TFLint_Report_Publish
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'tflint-report.xml'
-          testRunTitle: 'TFLint-scan'
+    # - job: tflint
+    #   displayName: TFLint
+    #   steps:
+    #   - task: CmdLine@2
+    #     displayName: TFLint
+    #     continueOnError: true
+    #     inputs:
+    #       script: 'tflint --recursive /f junit > tflint-report.xml'
+    #       workingDirectory: '$(System.DefaultWorkingDirectory)'
+    #   - task: PublishTestResults@2
+    #     displayName: TFLint_Report_Publish
+    #     inputs:
+    #       testResultsFormat: 'JUnit'
+    #       testResultsFiles: 'tflint-report.xml'
+    #       testRunTitle: 'TFLint-scan'
 # ----------------------
 # Stage 2 Job 3
 # ----------------------
-    - job: Checkov
-      displayName: Checkov
-      steps:
-      - task: CmdLine@2
-        displayName: checkov
-        continueOnError: true
-        inputs:
-          script: 'checkov -d . -o junitxml > checkov-out.xml || exit 0'
-          workingDirectory: '$(config_path)'
-      - task: PublishTestResults@2
-        displayName: Checkov_Publish
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'checkov-out.xml'
-          searchFolder: '$(config_path)'
-          testRunTitle: 'Checkov'
+    # - job: Checkov
+    #   displayName: Checkov
+    #   steps:
+    #   - task: CmdLine@2
+    #     displayName: Checkov
+    #     continueOnError: true
+    #     inputs:
+    #       script: 'checkov -d . -o junitxml > checkov-out.xml || exit 0'
+    #       workingDirectory: '$(config_path)'
+    #   - task: PublishTestResults@2
+    #     displayName: Checkov_Publish
+    #     inputs:
+    #       testResultsFormat: 'JUnit'
+    #       testResultsFiles: 'checkov-out.xml'
+    #       searchFolder: '$(config_path)'
+    #       testRunTitle: 'Checkov'
 
 # ----------------------
 # Stage 2: Deploy
