@@ -2,12 +2,17 @@ module "resource_group" {
   source      = "../../modules/01.azurerm_resource_group"
   rg_name     = "RKS_Infra_RG_dev"
   rg_location = "New Zealand North"
+  # for_each = var.rg_names
+  # rg_name     = each.value.name
+  # rg_location = each.value.location
 }
 
 module "virtual_network" {
   depends_on    = [module.resource_group]
   source        = "../../modules/02.azurerm_virtual_network"
   vnet_name     = "RK-vnet"
+  # rg_name     = module.resource_group["rg0"].rg_name
+  # rg_location = module.resource_group["rg0"].rg_location
   rg_location   = module.resource_group.rg_location
   rg_name       = module.resource_group.rg_name
   address_space = ["10.1.0.0/16"]

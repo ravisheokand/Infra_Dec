@@ -37,7 +37,7 @@ parameters:
 
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
-  OverrideSubscriptionID: 'ff1980ab-1170-4014-971d-df65aabf1e5b'
+  OverrideSubscriptionID: 'a9076473-03ad-4c76-8993-4edd69689ba6'
 
 stages:
 # ----------------------

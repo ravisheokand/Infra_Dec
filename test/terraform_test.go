@@ -1,36 +1,22 @@
 package test
 
 import (
-    "testing"
-    "os"
-    "github.com/gruntwork-io/terratest/modules/terraform"
+	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestTerraformExample(t *testing.T) {
-    t.Parallel() // Run tests in parallel
+func TestTerraformHelloWorldExample(t *testing.T) {
+	// retryable errors in terraform testing.
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../infra/dev",
+	})
 
-    terraformOptions := &terraform.Options{
-        // Path to Terraform code
-        TerraformDir: "../",
+	defer terraform.Destroy(t, terraformOptions)
 
-        // Variables to pass to Terraform
-        Vars: map[string]interface{}{
-            "example_variable": "value",
-        },
+	terraform.InitAndApply(t, terraformOptions)
 
-        // Disable colors in Terraform commands for easier parsing
-        NoColor: true,
-    }
-
-    // Clean up resources with "terraform destroy" at the end of the test
-    defer terraform.Destroy(t, terraformOptions)
-
-    // Run "terraform init" and "terraform apply"
-    terraform.InitAndApply(t, terraformOptions)
-
-    // Run "terraform output" and check value
-    exampleOutput := terraform.Output(t, terraformOptions, "example_output")
-    if exampleOutput != "expected_value" {
-        t.Fatalf("Expected output to be 'expected_value' but got %s", exampleOutput)
-    }
+	// output := terraform.Output(t, terraformOptions, "hello_world")
+	// assert.Equal(t, "Hello, World!", output)
 }
