@@ -120,9 +120,9 @@ stages:
 # ----------------------
 # Stage 2: Validate
 # ----------------------
-- stage: Validate
-  displayName: Validation
-  # dependsOn: Build
+- stage: Scanning_and_Costing
+  displayName: Scanning_and Costing
+  dependsOn: Build
   condition: eq('${{ parameters.Validate }}', true)
   jobs:
 # ----------------------
@@ -145,79 +145,72 @@ stages:
           PathtoPublish: '$(config_path)/cost-out.html'
           ArtifactName: 'costing'
           publishLocation: 'Container'
-
-      # - task: PublishTestResults@2
-      #   displayName: Terracost_Report_Publish
-      #   inputs:
-      #     testResultsFormat: 'JUnit'
-      #     testResultsFiles: 'terracostreport.xml'
-      #     searchFolder: '$(config_path)'
-      #     testRunTitle: 'Terracost-scan'
-
 # ----------------------
 # Stage 2 Job 2
 # ----------------------
-    # - job: tflint
-    #   displayName: TFLint
-    #   steps:
-    #   - task: CmdLine@2
-    #     displayName: TFLint
-    #     continueOnError: true
-    #     inputs:
-    #       script: 'tflint --recursive /f junit > tflint-report.xml'
-    #       workingDirectory: '$(System.DefaultWorkingDirectory)'
-    #   - task: PublishTestResults@2
-    #     displayName: TFLint_Report_Publish
-    #     inputs:
-    #       testResultsFormat: 'JUnit'
-    #       testResultsFiles: 'tflint-report.xml'
-    #       testRunTitle: 'TFLint-scan'
+    - job: tflint
+      dependsOn: infracost
+      displayName: TFLint
+      steps:
+      - task: CmdLine@2
+        displayName: TFLint
+        continueOnError: true
+        inputs:
+          script: 'tflint --recursive /f junit > tflint-report.xml'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+      - task: PublishTestResults@2
+        displayName: TFLint_Report_Publish
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'tflint-report.xml'
+          testRunTitle: 'TFLint-scan'
 # ----------------------
 # Stage 2 Job 3
 # ----------------------
-    # - job: Checkov
-    #   displayName: Checkov
-    #   steps:
-    #   - task: CmdLine@2
-    #     displayName: Checkov
-    #     continueOnError: true
-    #     inputs:
-    #       script: 'checkov -d . -o junitxml > checkov-out.xml || exit 0'
-    #       workingDirectory: '$(config_path)'
-    #   - task: PublishTestResults@2
-    #     displayName: Checkov_Publish
-    #     inputs:
-    #       testResultsFormat: 'JUnit'
-    #       testResultsFiles: 'checkov-out.xml'
-    #       searchFolder: '$(config_path)'
-    #       testRunTitle: 'Checkov'
+    - job: Checkov
+      dependsOn: tflint
+      displayName: Checkov
+      steps:
+      - task: CmdLine@2
+        displayName: Checkov
+        continueOnError: true
+        inputs:
+          script: 'checkov -d . -o junitxml > checkov-out.xml || exit 0'
+          workingDirectory: '$(config_path)'
+      - task: PublishTestResults@2
+        displayName: Checkov_Publish
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'checkov-out.xml'
+          searchFolder: '$(config_path)'
+          testRunTitle: 'Checkov'
 
 # ----------------------
-# Stage 2: Deploy
+# Stage 3: Deploy
 # ----------------------
 - stage: Deploy
   displayName: Deploy Stage (Manual Validation and Apply)
-  dependsOn: Build
+  dependsOn: Scanning_and_Costing
   condition: eq('${{ parameters.Deploy }}', true)
   jobs:
 # ----------------------
-# Stage 2 Job 1
+# Stage 3 Job 1
 # ----------------------
-    # - job: manual_validation
-    #   displayName: Manual Validation
-    #   pool: server
-    #   steps:
-    #     - task: ManualValidation@1
-    #       inputs:
-    #         notifyUsers: 'erashe25@gmail.com'
-    #         instructions: 'Check and approve'
+    - job: manual_validation
+      displayName: Manual Validation
+      pool: server
+      steps:
+        - task: ManualValidation@1
+          inputs:
+            notifyUsers: 'erashe25@gmail.com'
+            instructions: 'Check and approve'
 # ----------------------
-# Stage 2 Job 2
+# Stage 3 Job 2
 # ----------------------
     - job: terraform_apply
       displayName: Terraform Apply
-      # dependsOn: manual_validation
-      # condition: succeeded('manual_validation')
+      dependsOn: manual_validation
+      condition: succeeded('manual_validation')
       steps:
         - task: TerraformInstaller@1
           displayName: Install Terraform
