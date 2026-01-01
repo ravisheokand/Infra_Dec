@@ -122,7 +122,7 @@ module "frontend_vm" {
   image_offer     = "0001-com-ubuntu-server-jammy"
   image_sku       = "22_04-lts-gen2"
   image_version   = "latest"
-  key_vault_name  = "rk-kv-sep"
+  # key_vault_name  = "rk-kv-sep"
   admin_username  = "rkadmin"
   admin_password  = "Ericsson@123"
 }
@@ -139,7 +139,7 @@ module "backend_vm" {
   image_offer     = "0001-com-ubuntu-server-jammy"
   image_sku       = "22_04-lts-gen2"
   image_version   = "latest"
-  key_vault_name  = "rk-kv-sep"
+  # key_vault_name  = "rk-kv-sep"
   admin_username  = "rkadmin"
   admin_password  = "Ericsson@123"
 }
