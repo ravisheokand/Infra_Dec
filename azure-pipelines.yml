@@ -136,9 +136,10 @@ stages:
         continueOnError: true
         inputs:
           script: |
-            terraform init
-            terraform plan -out=tfplan
-            infracost breakdown --path tfplan --format=html > cost-out.html
+            # terraform init
+            # terraform plan -out=tfplan
+            # infracost breakdown --path tfplan --format=html > cost-out.html
+            infracost breakdown --path . --format=html > cost-out.html
           workingDirectory: '$(config_path)'
       - task: PublishBuildArtifacts@1
         inputs:
