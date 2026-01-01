@@ -1,4 +1,6 @@
 # variable "rg_names" {
+#   type        = list(string)
+#   description = "List of resource group names"
 # }
 
 # variable "rg_name" {
