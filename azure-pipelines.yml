@@ -1,10 +1,10 @@
-# trigger: none
+trigger: none
 
-trigger: 
-  branches:
-    include:
-      - feature/*
-      - main
+# trigger: 
+#   branches:
+#     include:
+#       - feature/*
+#       - main
 
 pool:
   name: SelfAgent_RK
