@@ -68,7 +68,7 @@ stages:
             backendServiceArm: 'Dec_Pipeline_2025'
             backendAzureRmOverrideSubscriptionID: '$(OverrideSubscriptionID)'
             backendAzureRmResourceGroupName: 'DoNotDeleteRg'
-            backendAzureRmStorageAccountName: 'donotdeletestorage555555'
+            backendAzureRmStorageAccountName: 'donotdeletestorage55555'
             backendAzureRmContainerName: 'tfstate'
             backendAzureRmKey: 'rkstest.tfstate'
         - task: TerraformTask@5
