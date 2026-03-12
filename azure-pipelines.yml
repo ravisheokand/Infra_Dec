@@ -10,54 +10,32 @@ pool:
   name: SelfAgent_RK
 
 parameters:
-  - name: environment
-    displayName: Environment
-    type: string
-    values:
-      - dev
-      - prod
-
   - name: Build
     displayName: Build (Run Init,Validate,Plan) ?
-    type: string
-    values:
-      - true
-      - false
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
+
+  - name: Validate
+    displayName: Validate ?
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
 
   - name: Deploy
     displayName: Deploy(Manual validation + Apply) ?
-    type: string
-    values:
-      - true
-      - false
-
-# parameters:
-#   - name: Build
-#     displayName: Build (Run Init,Validate,Plan) ?
-#     type: boolean
-#     default: true
-#     # type: string
-#     # values:
-#     #   - true
-#     #   - false
-
-#   - name: Validate
-#     displayName: Validate ?
-#     type: boolean
-#     default: true
-#     # type: string
-#     # values:
-#     #   - true
-#     #   - false
-
-#   - name: Deploy
-#     displayName: Deploy(Manual validation + Apply) ?
-#     type: boolean
-#     default: true
-#     # type: string
-#     # values:
-#     #   - true
-#     #   - false
+    type: boolean
+    default: true
+    # type: string
+    # values:
+    #   - true
+    #   - false
 
 variables:
   config_path: '$(System.DefaultWorkingDirectory)/infra/dev'
